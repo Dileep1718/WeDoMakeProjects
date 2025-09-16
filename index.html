@@ -843,8 +843,7 @@
                     <button class="filter-btn" data-filter="web">Web</button>
                 </div>
                 <div class="projects-grid" id="projects-grid-container">
-                    <!-- Projects will be dynamically inserted here -->
-                </div>
+                    </div>
             </div>
         </section>
 
@@ -1004,114 +1003,53 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // --- CONFIGURATION ---
             const CONFIG = {
-                GOOGLE_SHEET_URL: "https://script.google.com/macros/s/AKfycbysl92xeG12x56lGJ68jj2fHkKkJi1NKv0hC8Fc_0JgQWY340ApbHDMRibbqxBjShCo/exec",
+                //  IMPORTANT: PASTE YOUR GOOGLE APPS SCRIPT DEPLOYMENT URL HERE 
+                GOOGLE_SHEET_URL: "https://script.google.com/macros/s/YOUR_URL_HERE/exec",
             };
 
-            const projectsData = [{
-                title: "Smart City Waste Bin",
-                outcome: "“Cut collection trips by 32%”",
-                tags: ["IoT", "ESP32", "Cloud"],
-                category: "iot"
-            }, {
-                title: "Stock Price Predictor",
-                outcome: "“Achieved 85% directional accuracy”",
-                tags: ["LSTM", "AI/ML"],
-                category: "ml"
-            }, {
-                title: "Smart Irrigation System",
-                outcome: "“Reduced water usage by 40%”",
-                tags: ["Arduino", "Sensors"],
-                category: "iot"
-            }, {
-                title: "Facial Recognition Lock",
-                outcome: "“Latency under 300ms”",
-                tags: ["Vision", "Edge AI"],
-                category: "ml iot"
-            }, {
-                title: "E-commerce Platform",
-                outcome: "“Full-featured with payment gateway”",
-                tags: ["React", "Node.js"],
-                category: "web"
-            }, {
-                title: "Sentiment Analysis Tool",
-                outcome: "“Analyzed social media trends”",
-                tags: ["NLP", "Python"],
-                category: "ml"
-            }, {
-                title: "Home Automation System",
-                outcome: "“Control lights & fans remotely”",
-                tags: ["IoT", "Blynk"],
-                category: "iot"
-            }, {
-                title: "Live Tutoring Platform",
-                outcome: "“Supported 50+ concurrent users”",
-                tags: ["WebRTC", "Socket.io"],
-                category: "web"
-            }, {
-                title: "Crop Disease Detection",
-                outcome: "“Achieved 95% accuracy”",
-                tags: ["CNN", "TensorFlow"],
-                category: "ml"
-            }, {
-                title: "Aquarium pH Control",
-                outcome: "“Auto-maintains pH 6.8–7.2”",
-                tags: ["NodeMCU", "Automation"],
-                category: "iot"
-            }, {
-                title: "Placement Match Portal",
-                outcome: "“Match rate +28%”",
-                tags: ["Web", "Database"],
-                category: "web"
-            }, {
-                title: "Biogas Monitor",
-                outcome: "“Threshold alerts + cloud log”",
-                tags: ["Sensors", "Alerts"],
-                category: "iot"
-            }, {
-                title: "Movie Recommendation Engine",
-                outcome: "“Personalized user suggestions”",
-                tags: ["AI/ML", "Collaborative Filtering"],
-                category: "ml"
-            }, {
-                title: "Portfolio Builder App",
-                outcome: "“Create and deploy a personal site”",
-                tags: ["Web", "JavaScript"],
-                category: "web"
-            }, {
-                title: "GPS Asset Tracker",
-                outcome: "“Real-time location monitoring”",
-                tags: ["IoT", "GPS Module"],
-                category: "iot"
-            }];
-
+            // --- DATA & INITIAL SETUP ---
+            const projectsData = [{ title: "Smart City Waste Bin", outcome: "“Cut collection trips by 32%”", tags: ["IoT", "ESP32", "Cloud"], category: "iot" }, { title: "Stock Price Predictor", outcome: "“Achieved 85% directional accuracy”", tags: ["LSTM", "AI/ML"], category: "ml" }, { title: "Smart Irrigation System", outcome: "“Reduced water usage by 40%”", tags: ["Arduino", "Sensors"], category: "iot" }, { title: "Facial Recognition Lock", outcome: "“Latency under 300ms”", tags: ["Vision", "Edge AI"], category: "ml iot" }, { title: "E-commerce Platform", outcome: "“Full-featured with payment gateway”", tags: ["React", "Node.js"], category: "web" }, { title: "Sentiment Analysis Tool", outcome: "“Analyzed social media trends”", tags: ["NLP", "Python"], category: "ml" }, { title: "Home Automation System", outcome: "“Control lights & fans remotely”", tags: ["IoT", "Blynk"], category: "iot" }, { title: "Live Tutoring Platform", outcome: "“Supported 50+ concurrent users”", tags: ["WebRTC", "Socket.io"], category: "web" }, { title: "Crop Disease Detection", outcome: "“Achieved 95% accuracy”", tags: ["CNN", "TensorFlow"], category: "ml" }, { title: "Aquarium pH Control", outcome: "“Auto-maintains pH 6.8–7.2”", tags: ["NodeMCU", "Automation"], category: "iot" }, { title: "Placement Match Portal", outcome: "“Match rate +28%”", tags: ["Web", "Database"], category: "web" }, { title: "Biogas Monitor", outcome: "“Threshold alerts + cloud log”", tags: ["Sensors", "Alerts"], category: "iot" }, { title: "Movie Recommendation Engine", outcome: "“Personalized user suggestions”", tags: ["AI/ML", "Collaborative Filtering"], category: "ml" }, { title: "Portfolio Builder App", outcome: "“Create and deploy a personal site”", tags: ["Web", "JavaScript"], category: "web" }, { title: "GPS Asset Tracker", outcome: "“Real-time location monitoring”", tags: ["IoT", "GPS Module"], category: "iot" }];
             const projectsGrid = document.getElementById('projects-grid-container');
+            const header = document.getElementById('header');
+            const heroHeadline = document.getElementById('hero-headline');
+            const spotlight = document.querySelector('.hero-spotlight');
+            const heroSection = document.querySelector('.hero');
+            const animatedElements = document.querySelectorAll('.section-title, .section-subtext, .process-item, .review-card, .training-card, .faq-item');
+            const filterContainer = document.querySelector('.project-filters');
+            const navToggle = document.querySelector('.nav-toggle');
+            const navMenu = document.querySelector('.nav-menu');
+            const faqItems = document.querySelectorAll('.faq-item');
+
+            // --- PAGE WIDGETS & ANIMATIONS ---
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
 
             function renderProjects(filter = 'all') {
                 projectsGrid.innerHTML = '';
                 const filteredProjects = filter === 'all' ? projectsData : projectsData.filter(p => p.category.includes(filter));
-
                 filteredProjects.forEach(project => {
                     const card = document.createElement('div');
                     card.className = 'project-card';
                     card.dataset.category = project.category;
-
                     const tagsHtml = project.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
-
-                    card.innerHTML = `
-                    <h3>${project.title}</h3>
-                    <p class="outcome">${project.outcome}</p>
-                    <div class="tags">${tagsHtml}</div>
-                `;
+                    card.innerHTML = `<h3>${project.title}</h3><p class="outcome">${project.outcome}</p><div class="tags">${tagsHtml}</div>`;
                     projectsGrid.appendChild(card);
                 });
                 document.querySelectorAll('.project-card').forEach(el => observer.observe(el));
             }
 
-            const header = document.getElementById('header');
             window.addEventListener('scroll', () => header.classList.toggle('scrolled', window.scrollY > 20));
 
-            const heroHeadline = document.getElementById('hero-headline');
             const text = heroHeadline.textContent;
             heroHeadline.innerHTML = '';
             text.split(' ').forEach((word, wordIndex) => {
@@ -1133,30 +1071,14 @@
                 });
                 heroHeadline.appendChild(wordWrapper);
             });
-
-            const spotlight = document.querySelector('.hero-spotlight');
-            const heroSection = document.querySelector('.hero');
+            
             heroSection.addEventListener('mousemove', (e) => {
                 const rect = heroSection.getBoundingClientRect();
                 spotlight.style.transform = `translate(${e.clientX - rect.left - spotlight.offsetWidth / 2}px, ${e.clientY - rect.top - spotlight.offsetHeight / 2}px)`;
             });
 
-            const animatedElements = document.querySelectorAll('.section-title, .section-subtext, .process-item, .review-card, .training-card, .faq-item');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('animate');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, {
-                threshold: 0.1
-            });
             animatedElements.forEach(el => observer.observe(el));
-
             document.getElementById('currentYear').textContent = new Date().getFullYear();
-
-            const filterContainer = document.querySelector('.project-filters');
             filterContainer.addEventListener('click', (e) => {
                 if (e.target.tagName !== 'BUTTON') return;
                 const filter = e.target.dataset.filter;
@@ -1165,26 +1087,17 @@
                 renderProjects(filter);
             });
 
-            const navToggle = document.querySelector('.nav-toggle');
-            const navMenu = document.querySelector('.nav-menu');
-            navToggle.addEventListener('click', () => {
-                navMenu.classList.toggle('is-open');
-            });
-            navMenu.querySelectorAll('a').forEach(link => {
-                link.addEventListener('click', () => navMenu.classList.remove('is-open'));
-            });
-
-            const faqItems = document.querySelectorAll('.faq-item');
+            navToggle.addEventListener('click', () => navMenu.classList.toggle('is-open'));
+            navMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => navMenu.classList.remove('is-open')));
             faqItems.forEach(item => {
                 const question = item.querySelector('.faq-question');
-                question.addEventListener('click', () => {
-                    item.classList.toggle('active');
-                });
+                question.addEventListener('click', () => item.classList.toggle('active'));
             });
 
             renderProjects();
 
-            const submitBtn = document.getElementById('submitBtn');
+            // --- FORM HANDLING LOGIC ---
+            const form = document.getElementById('contactForm');
             const formFields = {
                 interest: form.querySelector('#interest'),
                 name: form.querySelector('#fullName'),
@@ -1215,13 +1128,7 @@
 
             const toggleError = (field, name, isValid) => {
                 const errorEl = document.getElementById(`${name}Error`);
-                const errorMessages = {
-                    name: "Full name is required.",
-                    email: "A valid email is required.",
-                    phone: "A valid 10-digit phone number is required.",
-                    year: "Please select your year.",
-                    consent: "You must agree to be contacted."
-                };
+                const errorMessages = { name: "Full name is required.", email: "A valid email is required.", phone: "A valid 10-digit phone number is required.", year: "Please select your year.", consent: "You must agree to be contacted." };
                 if (isValid) {
                     field.classList.remove('invalid');
                     if (errorEl) errorEl.style.display = 'none';
@@ -1248,8 +1155,6 @@
                 return isValid;
             };
 
-            const form = document.getElementById('contactForm');
-
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const lastSubmit = parseInt(localStorage.getItem('pf_last_submit') || '0');
@@ -1257,21 +1162,20 @@
                     showToast("Please wait before submitting again.", "error");
                     return;
                 }
-
-                if (form.querySelector('[name="website"]').value) return; // Honeypot check
-
+                if (formFields.honeypot.value) return;
                 if (!validateForm()) {
                     showToast("Please fix the errors to continue.", "error");
                     return;
                 }
-
+                if (!CONFIG.GOOGLE_SHEET_URL.includes('google.com')) {
+                    showToast("Form is not configured. Please contact support.", "error");
+                    console.error("Google Sheet URL is not configured.");
+                    return;
+                }
                 const submitBtn = document.getElementById('submitBtn');
                 submitBtn.disabled = true;
                 submitBtn.textContent = 'Submitting...';
-
-                // Use FormData, just like your working script
                 const formData = new FormData(form);
-
                 fetch(CONFIG.GOOGLE_SHEET_URL, {
                         method: 'POST',
                         body: formData,
@@ -1282,12 +1186,7 @@
                             showToast("Success! Your form has been submitted.", "success");
                             form.reset();
                             submitBtn.classList.add('is-success');
-                            submitBtn.innerHTML = `
-                            <svg xmlns="http://www.w3.org/2000/svg" style="width:20px; height:20px; display:inline-block; vertical-align:middle; margin-right:8px;" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                            </svg>
-                            Submitted!
-                        `;
+                            submitBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" style="width:20px; height:20px; display:inline-block; vertical-align:middle; margin-right:8px;" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg> Submitted!`;
                             setTimeout(() => {
                                 submitBtn.disabled = false;
                                 submitBtn.classList.remove('is-success');
@@ -1307,37 +1206,6 @@
                         localStorage.setItem('pf_last_submit', Date.now().toString());
                     });
             });
-
-            const queueSubmission = (data) => {
-                try {
-                    const queue = JSON.parse(localStorage.getItem('pf_lead_queue')) || [];
-                    queue.push(data);
-                    localStorage.setItem('pf_lead_queue', JSON.stringify(queue));
-                } catch (error) {
-                    console.error("Failed to queue submission:", error);
-                }
-            };
-
-            const flushQueue = async() => {
-                let queue;
-                try {
-                    queue = JSON.parse(localStorage.getItem('pf_lead_queue')) || [];
-                } catch {
-                    queue = [];
-                }
-                if (queue.length === 0 || !navigator.onLine) return;
-
-                const remainingItems = [];
-                for (const item of queue) {
-                    if (!(await sendData(item))) remainingItems.push(item);
-                    else showToast("A previously saved submission was sent.", "success");
-                }
-                localStorage.setItem('pf_lead_queue', JSON.stringify(remainingItems));
-            };
-
-            setInterval(flushQueue, 15000);
-            window.addEventListener('online', flushQueue);
-            flushQueue();
         });
     </script>
 </body>
