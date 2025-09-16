@@ -988,15 +988,14 @@
                     <div class="error-message" id="phoneError"></div>
                 </div>
                 <div class="form-group"><label for="year">Year</label><select id="year" name="year" required><option value="">Select your year</option><option value="1st Year">1st Year</option><option value="2nd Year">2nd Year</option><option value="3rd Year">3rd Year</option><option value="4th Year">4th Year</option><option value="5th Year/PG">5th Year/PG</option></select>
-                    <div
-                        class="error-message" id="yearError"></div>
-        </div>
-        <div class="form-group"><label for="problemStatement">Problem Statement (optional)</label><textarea id="problemStatement" name="problem" placeholder="Paste your idea here, or leave blank for our suggestions." maxlength="1200"></textarea></div>
-        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
-        <div class="checkbox-group" style="display: flex; align-items: center; gap: 12px; margin: 24px 0;"><input type="checkbox" id="consent" name="consent" required style="width: 1.2em; height: 1.2em;"><label for="consent" style="margin:0; font-weight: 400; color: var(--text-secondary);">I agree to be contacted via phone/WhatsApp/email about my project.</label></div>
-        <div class="error-message" id="consentError" style="text-align: left;"></div>
-        <button type="submit" id="submitBtn" class="btn btn-primary" style="width: 100%; margin-top: var(--spacing-unit);">Get a Callback</button>
-        </form>
+                    <div class="error-message" id="yearError"></div>
+                </div>
+                <div class="form-group"><label for="problemStatement">Problem Statement (optional)</label><textarea id="problemStatement" name="problem" placeholder="Paste your idea here, or leave blank for our suggestions." maxlength="1200"></textarea></div>
+                <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
+                <div class="checkbox-group" style="display: flex; align-items: center; gap: 12px; margin: 24px 0;"><input type="checkbox" id="consent" name="consent" required style="width: 1.2em; height: 1.2em;"><label for="consent" style="margin:0; font-weight: 400; color: var(--text-secondary);">I agree to be contacted via phone/WhatsApp/email about my project.</label></div>
+                <div class="error-message" id="consentError" style="text-align: left;"></div>
+                <button type="submit" id="submitBtn" class="btn btn-primary" style="width: 100%; margin-top: var(--spacing-unit);">Get a Callback</button>
+            </form>
         </div>
         <div class="footer-microline">© <span id="currentYear"></span> WeMakeProjects — Your Success, Delivered.</div>
     </footer>
@@ -1006,7 +1005,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const CONFIG = {
-                GOOGLE_SHEET_URL: "https://script.google.com/macros/s/AKfycbyixmi1RpniygNrEk6YJGGG2sfKRy8iiZSew3PfCKD2kEf57rrwpUQbNsBkGmzjzLCDXw/exec",
+                GOOGLE_SHEET_URL: "https://script.google.com/macros/s/AKfycbysl92xeG12x56lGJ68jj2fHkKkJi1NKv0hC8Fc_0JgQWY340ApbHDMRibbqxBjShCo/exec",
             };
 
             const projectsData = [{
@@ -1185,7 +1184,6 @@
 
             renderProjects();
 
-            const form = document.getElementById('contactForm');
             const submitBtn = document.getElementById('submitBtn');
             const formFields = {
                 interest: form.querySelector('#interest'),
@@ -1250,82 +1248,65 @@
                 return isValid;
             };
 
-            form.addEventListener('submit', async(e) => {
+            const form = document.getElementById('contactForm');
+
+            form.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const lastSubmit = parseInt(localStorage.getItem('pf_last_submit') || '0');
                 if (Date.now() - lastSubmit < 10000) {
                     showToast("Please wait before submitting again.", "error");
                     return;
                 }
-                if (formFields.honeypot.value) return;
+
+                if (form.querySelector('[name="website"]').value) return; // Honeypot check
+
                 if (!validateForm()) {
                     showToast("Please fix the errors to continue.", "error");
                     return;
                 }
 
+                const submitBtn = document.getElementById('submitBtn');
                 submitBtn.disabled = true;
                 submitBtn.textContent = 'Submitting...';
 
-                const formData = {
-                    interest: formFields.interest.value,
-                    name: formFields.name.value.trim(),
-                    email: formFields.email.value.trim(),
-                    phone: formFields.phone.value.trim(),
-                    year: formFields.year.value,
-                    problem: form.querySelector('#problemStatement').value.trim().replace(/<[^>]*>?/gm, ''),
-                };
+                // Use FormData, just like your working script
+                const formData = new FormData(form);
 
-                try {
-                    if (await sendData(formData)) {
-                        showToast("Success! Your form has been submitted.", "success");
-                        form.reset();
-                        submitBtn.classList.add('is-success');
-                        submitBtn.innerHTML = `
-                        <svg xmlns="http://www.w3.org/2000/svg" style="width:20px; height:20px; display:inline-block; vertical-align:middle; margin-right:8px;" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                        </svg>
-                        Submitted!
-                    `;
-                        setTimeout(() => {
-                            submitBtn.disabled = false;
-                            submitBtn.classList.remove('is-success');
-                            submitBtn.innerHTML = 'Get a Callback';
-                        }, 4000);
-                    } else {
-                        throw new Error("Data send failed");
-                    }
-                } catch (error) {
-                    queueSubmission(formData);
-                    showToast("Submission saved offline. We'll send it when you're back online.", "info");
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = 'Get a Callback';
-                } finally {
-                    localStorage.setItem('pf_last_submit', Date.now().toString());
-                }
-            });
-
-            const sendData = async(data) => {
-                console.log("Attempting to send data to Google Sheet:", data);
-                if (!CONFIG.GOOGLE_SHEET_URL.includes('google.com')) {
-                    console.error("Google Sheet URL is not configured.");
-                    return false;
-                }
-                try {
-                    const response = await fetch(CONFIG.GOOGLE_SHEET_URL, {
+                fetch(CONFIG.GOOGLE_SHEET_URL, {
                         method: 'POST',
-                        mode: 'no-cors',
-                        body: JSON.stringify(data),
-                        headers: {
-                            "Content-Type": "text/plain;charset=utf-8"
+                        body: formData,
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.result === 'success') {
+                            showToast("Success! Your form has been submitted.", "success");
+                            form.reset();
+                            submitBtn.classList.add('is-success');
+                            submitBtn.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" style="width:20px; height:20px; display:inline-block; vertical-align:middle; margin-right:8px;" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                            Submitted!
+                        `;
+                            setTimeout(() => {
+                                submitBtn.disabled = false;
+                                submitBtn.classList.remove('is-success');
+                                submitBtn.innerHTML = 'Get a Callback';
+                            }, 4000);
+                        } else {
+                            throw new Error(data.error || 'Server reported an error.');
                         }
+                    })
+                    .catch(error => {
+                        console.error('Submission Error:', error);
+                        showToast("Submission failed. Please try again.", "error");
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = 'Get a Callback';
+                    })
+                    .finally(() => {
+                        localStorage.setItem('pf_last_submit', Date.now().toString());
                     });
-                    console.log("Data sent to Google Sheet proxy.");
-                    return true;
-                } catch (error) {
-                    console.error("Fetch error:", error);
-                    return false;
-                }
-            };
+            });
 
             const queueSubmission = (data) => {
                 try {
