@@ -1041,8 +1041,8 @@
                     const card = document.createElement('div');
                     card.className = 'project-card';
                     card.dataset.category = project.category;
-                    const tagsHtml = project.tags.map(tag => <span class="tag">${tag}</span>).join('');
-                    card.innerHTML = <h3>${project.title}</h3><p class="outcome">${project.outcome}</p><div class="tags">${tagsHtml}</div>;
+                    const tagsHtml = project.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+                    card.innerHTML = `<h3>${project.title}</h3><p class="outcome">${project.outcome}</p><div class="tags">${tagsHtml}</div>`;
                     projectsGrid.appendChild(card);
                 });
                 document.querySelectorAll('.project-card').forEach(el => observer.observe(el));
@@ -1062,7 +1062,7 @@
                     span.style.display = 'inline-block';
                     span.style.opacity = '0';
                     span.style.transform = 'translateY(20px)';
-                    span.style.transition = opacity 0.5s ease ${wordIndex * 0.1 + charIndex * 0.03}s, transform 0.5s ease ${wordIndex * 0.1 + charIndex * 0.03}s;
+                    span.style.transition = `opacity 0.5s ease ${wordIndex * 0.1 + charIndex * 0.03}s, transform 0.5s ease ${wordIndex * 0.1 + charIndex * 0.03}s`;
                     wordWrapper.appendChild(span);
                     setTimeout(() => {
                         span.style.opacity = '1';
@@ -1074,7 +1074,7 @@
             
             heroSection.addEventListener('mousemove', (e) => {
                 const rect = heroSection.getBoundingClientRect();
-                spotlight.style.transform = translate(${e.clientX - rect.left - spotlight.offsetWidth / 2}px, ${e.clientY - rect.top - spotlight.offsetHeight / 2}px);
+                spotlight.style.transform = `translate(${e.clientX - rect.left - spotlight.offsetWidth / 2}px, ${e.clientY - rect.top - spotlight.offsetHeight / 2}px)`;
             });
 
             animatedElements.forEach(el => observer.observe(el));
@@ -1120,14 +1120,14 @@
             const showToast = (message, type = 'info', duration = 4000) => {
                 const toast = document.getElementById('toast');
                 toast.textContent = message;
-                toast.className = toast show ${type};
+                toast.className = `toast show ${type}`;
                 setTimeout(() => {
                     toast.className = 'toast';
                 }, duration);
             };
 
             const toggleError = (field, name, isValid) => {
-                const errorEl = document.getElementById(${name}Error);
+                const errorEl = document.getElementById(`${name}Error`);
                 const errorMessages = { name: "Full name is required.", email: "A valid email is required.", phone: "A valid 10-digit phone number is required.", year: "Please select your year.", consent: "You must agree to be contacted." };
                 if (isValid) {
                     field.classList.remove('invalid');
@@ -1197,7 +1197,7 @@
         console.log('Response headers:', [...response.headers.entries()]);
         
         if (!response.ok) {
-            throw new Error(HTTP ${response.status}: ${response.statusText});
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
         
         const contentType = response.headers.get('content-type');
@@ -1223,7 +1223,7 @@
             showToast("Success! Your form has been submitted.", "success");
             form.reset();
             submitBtn.classList.add('is-success');
-            submitBtn.innerHTML = <svg xmlns="http://www.w3.org/2000/svg" style="width:20px; height:20px; display:inline-block; vertical-align:middle; margin-right:8px;" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg> Submitted!;
+            submitBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" style="width:20px; height:20px; display:inline-block; vertical-align:middle; margin-right:8px;" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg> Submitted!`;
             setTimeout(() => {
                 submitBtn.disabled = false;
                 submitBtn.classList.remove('is-success');
