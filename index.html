@@ -1006,7 +1006,7 @@
             // --- CONFIGURATION ---
             const CONFIG = {
                 //  IMPORTANT: PASTE YOUR GOOGLE APPS SCRIPT DEPLOYMENT URL HERE 
-                GOOGLE_SHEET_URL: "https://script.google.com/macros/s/AKfycbzRqUB5gmRR-wUpLWKFSGYKUal987Ml10RsDLi_ETqqsooXngxOaZUvBc_339tBSFckbw/exec",
+                GOOGLE_SHEET_URL: "https://script.google.com/macros/s/AKfycbxlEhjLJHKxY_ywiXW1xLVk32_84hxrWVwxH2dIc6AV1pBKlDt-3MIkrsaFXhie0BvnEA/exec",
             };
 
             // --- DATA & INITIAL SETUP ---
@@ -1156,59 +1156,68 @@
             };
 
             form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const lastSubmit = parseInt(localStorage.getItem('pf_last_submit') || '0');
-                if (Date.now() - lastSubmit < 10000) {
-                    showToast("Please wait before submitting again.", "error");
-                    return;
-                }
-                if (formFields.honeypot.value) return;
-                if (!validateForm()) {
-                    showToast("Please fix the errors to continue.", "error");
-                    return;
-                }
-                if (!CONFIG.GOOGLE_SHEET_URL.includes('google.com')) {
-                    showToast("Form is not configured. Please contact support.", "error");
-                    console.error("Google Sheet URL is not configured.");
-                    return;
-                }
-                const submitBtn = document.getElementById('submitBtn');
-                submitBtn.disabled = true;
-                submitBtn.textContent = 'Submitting...';
-                const formData = new FormData(form);
-                fetch(CONFIG.GOOGLE_SHEET_URL, {
-                        method: 'POST',
-                        body: formData,
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.result === 'success') {
-                            showToast("Success! Your form has been submitted.", "success");
-                            form.reset();
-                            submitBtn.classList.add('is-success');
-                            submitBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" style="width:20px; height:20px; display:inline-block; vertical-align:middle; margin-right:8px;" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg> Submitted!`;
-                            setTimeout(() => {
-                                submitBtn.disabled = false;
-                                submitBtn.classList.remove('is-success');
-                                submitBtn.innerHTML = 'Get a Callback';
-                            }, 4000);
-                        } else {
-                            throw new Error(data.error || 'Server reported an error.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Submission Error:', error);
-                        showToast("Submission failed. Please try again.", "error");
+            e.preventDefault();
+            const lastSubmit = parseInt(localStorage.getItem('pf_last_submit') || '0');
+            if (Date.now() - lastSubmit < 10000) {
+                showToast("Please wait before submitting again.", "error");
+                return;
+            }
+            if (formFields.honeypot.value) return;
+            if (!validateForm()) {
+                showToast("Please fix the errors to continue.", "error");
+                return;
+            }
+            if (!CONFIG.GOOGLE_SHEET_URL.includes('google.com')) {
+                showToast("Form is not configured. Please contact support.", "error");
+                return;
+            }
+        
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+        
+            const formData = new FormData(form);
+            const plainData = Object.fromEntries(formData.entries()); // convert to plain object
+            const jsonData = JSON.stringify(plainData);
+        
+            fetch(CONFIG.GOOGLE_SHEET_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: jsonData,
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.result === 'success') {
+                    showToast("Success! Your form has been submitted.", "success");
+                    form.reset();
+                    submitBtn.classList.add('is-success');
+                    submitBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" style="width:20px; height:20px; display:inline-block; vertical-align:middle; margin-right:8px;" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg> Submitted!`;
+                    setTimeout(() => {
                         submitBtn.disabled = false;
+                        submitBtn.classList.remove('is-success');
                         submitBtn.innerHTML = 'Get a Callback';
-                    })
-                    .finally(() => {
-                        localStorage.setItem('pf_last_submit', Date.now().toString());
-                    });
+                    }, 4000);
+                } else {
+                    throw new Error(data.error || "Server error");
+                }
+            })
+            .catch(err => {
+                console.error("Submission Error:", err);
+                showToast("Submission failed. Please try again.", "error");
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Get a Callback';
+            })
+            .finally(() => {
+                localStorage.setItem('pf_last_submit', Date.now().toString());
             });
         });
+
     </script>
 </body>
 
 </html>
+
 
