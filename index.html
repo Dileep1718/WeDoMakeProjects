@@ -608,7 +608,7 @@
         }
         
         .training-card:hover {
-            transform: translateY(-8px) scale(1.02);
+            transform: translateY(-8px) rotateX(5deg) rotateY(-5deg) scale(1.03);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
             border-color: rgba(var(--accent-rgb), 0.7);
         }
@@ -843,7 +843,7 @@
                     <button class="filter-btn" data-filter="web">Web</button>
                 </div>
                 <div class="projects-grid" id="projects-grid-container">
-                    </div>
+                </div>
             </div>
         </section>
 
@@ -1006,7 +1006,7 @@
             // --- CONFIGURATION ---
             const CONFIG = {
                 //  IMPORTANT: PASTE YOUR GOOGLE APPS SCRIPT DEPLOYMENT URL HERE 
-                GOOGLE_SHEET_URL: "https://script.google.com/macros/s/AKfycbxlEhjLJHKxY_ywiXW1xLVk32_84hxrWVwxH2dIc6AV1pBKlDt-3MIkrsaFXhie0BvnEA/exec",
+                GOOGLE_SHEET_URL: "https://script.google.com/macros/s/AKfycby9sfJwOhIm1xQwk6xAworZxsnOBBy54_iNnkBu3e2dk1ZP6j7E7rOuM81PLL1clA8MIQ/exec",
             };
 
             // --- DATA & INITIAL SETUP ---
@@ -1041,8 +1041,8 @@
                     const card = document.createElement('div');
                     card.className = 'project-card';
                     card.dataset.category = project.category;
-                    const tagsHtml = project.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
-                    card.innerHTML = `<h3>${project.title}</h3><p class="outcome">${project.outcome}</p><div class="tags">${tagsHtml}</div>`;
+                    const tagsHtml = project.tags.map(tag => <span class="tag">${tag}</span>).join('');
+                    card.innerHTML = <h3>${project.title}</h3><p class="outcome">${project.outcome}</p><div class="tags">${tagsHtml}</div>;
                     projectsGrid.appendChild(card);
                 });
                 document.querySelectorAll('.project-card').forEach(el => observer.observe(el));
@@ -1062,7 +1062,7 @@
                     span.style.display = 'inline-block';
                     span.style.opacity = '0';
                     span.style.transform = 'translateY(20px)';
-                    span.style.transition = `opacity 0.5s ease ${wordIndex * 0.1 + charIndex * 0.03}s, transform 0.5s ease ${wordIndex * 0.1 + charIndex * 0.03}s`;
+                    span.style.transition = opacity 0.5s ease ${wordIndex * 0.1 + charIndex * 0.03}s, transform 0.5s ease ${wordIndex * 0.1 + charIndex * 0.03}s;
                     wordWrapper.appendChild(span);
                     setTimeout(() => {
                         span.style.opacity = '1';
@@ -1074,7 +1074,7 @@
             
             heroSection.addEventListener('mousemove', (e) => {
                 const rect = heroSection.getBoundingClientRect();
-                spotlight.style.transform = `translate(${e.clientX - rect.left - spotlight.offsetWidth / 2}px, ${e.clientY - rect.top - spotlight.offsetHeight / 2}px)`;
+                spotlight.style.transform = translate(${e.clientX - rect.left - spotlight.offsetWidth / 2}px, ${e.clientY - rect.top - spotlight.offsetHeight / 2}px);
             });
 
             animatedElements.forEach(el => observer.observe(el));
@@ -1120,14 +1120,14 @@
             const showToast = (message, type = 'info', duration = 4000) => {
                 const toast = document.getElementById('toast');
                 toast.textContent = message;
-                toast.className = `toast show ${type}`;
+                toast.className = toast show ${type};
                 setTimeout(() => {
                     toast.className = 'toast';
                 }, duration);
             };
 
             const toggleError = (field, name, isValid) => {
-                const errorEl = document.getElementById(`${name}Error`);
+                const errorEl = document.getElementById(${name}Error);
                 const errorMessages = { name: "Full name is required.", email: "A valid email is required.", phone: "A valid 10-digit phone number is required.", year: "Please select your year.", consent: "You must agree to be contacted." };
                 if (isValid) {
                     field.classList.remove('invalid');
@@ -1156,68 +1156,105 @@
             };
 
             form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const lastSubmit = parseInt(localStorage.getItem('pf_last_submit') || '0');
-            if (Date.now() - lastSubmit < 10000) {
-                showToast("Please wait before submitting again.", "error");
-                return;
-            }
-            if (formFields.honeypot.value) return;
-            if (!validateForm()) {
-                showToast("Please fix the errors to continue.", "error");
-                return;
-            }
-            if (!CONFIG.GOOGLE_SHEET_URL.includes('google.com')) {
-                showToast("Form is not configured. Please contact support.", "error");
-                return;
-            }
+    e.preventDefault();
+    
+    const lastSubmit = parseInt(localStorage.getItem('pf_last_submit') || '0');
+    if (Date.now() - lastSubmit < 10000) {
+        showToast("Please wait before submitting again.", "error");
+        return;
+    }
+    
+    if (formFields.honeypot.value) return;
+    
+    if (!validateForm()) {
+        showToast("Please fix the errors to continue.", "error");
+        return;
+    }
+    
+    if (!CONFIG.GOOGLE_SHEET_URL.includes('google.com')) {
+        showToast("Form is not configured. Please contact support.", "error");
+        console.error("Google Sheet URL is not configured.");
+        return;
+    }
+    
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+    
+    const formData = new FormData(form);
+    
+    // Make the fetch request with better error handling
+    fetch(CONFIG.GOOGLE_SHEET_URL, {
+        method: 'POST',
+        mode: 'cors',
+        body: formData,
+        headers: {
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        console.log('Response headers:', [...response.headers.entries()]);
         
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Submitting...';
+        if (!response.ok) {
+            throw new Error(HTTP ${response.status}: ${response.statusText});
+        }
         
-            const formData = new FormData(form);
-            const plainData = Object.fromEntries(formData.entries()); // convert to plain object
-            const jsonData = JSON.stringify(plainData);
-        
-            fetch(CONFIG.GOOGLE_SHEET_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: jsonData,
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.result === 'success') {
-                    showToast("Success! Your form has been submitted.", "success");
-                    form.reset();
-                    submitBtn.classList.add('is-success');
-                    submitBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" style="width:20px; height:20px; display:inline-block; vertical-align:middle; margin-right:8px;" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg> Submitted!`;
-                    setTimeout(() => {
-                        submitBtn.disabled = false;
-                        submitBtn.classList.remove('is-success');
-                        submitBtn.innerHTML = 'Get a Callback';
-                    }, 4000);
-                } else {
-                    throw new Error(data.error || "Server error");
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            console.warn('Expected JSON response but got:', contentType);
+            // Try to read as text to see what we actually got
+            return response.text().then(text => {
+                console.log('Response text:', text);
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    throw new Error('Invalid JSON response from server');
                 }
-            })
-            .catch(err => {
-                console.error("Submission Error:", err);
-                showToast("Submission failed. Please try again.", "error");
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = 'Get a Callback';
-            })
-            .finally(() => {
-                localStorage.setItem('pf_last_submit', Date.now().toString());
             });
+        }
+        
+        return response.json();
+    })
+    .then(data => {
+        console.log('Parsed response data:', data);
+        
+        if (data.result === 'success') {
+            showToast("Success! Your form has been submitted.", "success");
+            form.reset();
+            submitBtn.classList.add('is-success');
+            submitBtn.innerHTML = <svg xmlns="http://www.w3.org/2000/svg" style="width:20px; height:20px; display:inline-block; vertical-align:middle; margin-right:8px;" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg> Submitted!;
+            setTimeout(() => {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('is-success');
+                submitBtn.innerHTML = 'Get a Callback';
+            }, 4000);
+        } else {
+            throw new Error(data.error || 'Server reported an error.');
+        }
+    })
+    .catch(error => {
+        console.error('Submission Error:', error);
+        
+        // More specific error messages based on the error type
+        let errorMessage = "Submission failed. Please try again.";
+        if (error.message.includes('CORS')) {
+            errorMessage = "Network error. Please check your connection and try again.";
+        } else if (error.message.includes('JSON')) {
+            errorMessage = "Server response error. Please try again in a moment.";
+        } else if (error.message.includes('HTTP')) {
+            errorMessage = "Server error. Please try again later.";
+        }
+        
+        showToast(errorMessage, "error");
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Get a Callback';
+    })
+    .finally(() => {
+        localStorage.setItem('pf_last_submit', Date.now().toString());
+    });
+});
         });
-
     </script>
 </body>
-
 </html>
-
-
