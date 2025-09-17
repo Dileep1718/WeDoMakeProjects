@@ -207,18 +207,6 @@
             box-shadow: 0 6px 20px 0 rgba(var(--accent-rgb), 0.3);
         }
         
-        .btn-primary:disabled {
-            background-color: #6c757d;
-            color: #ffffff;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-        
-        .btn-primary.is-success {
-            background-color: #198754;
-        }
-        
         header {
             position: sticky;
             top: 0;
@@ -635,52 +623,6 @@
             text-align: center;
         }
         
-        .form-group {
-            margin-bottom: calc(var(--spacing-unit) * 2.5);
-            text-align: left;
-        }
-        
-        .form-group label {
-            display: block;
-            font-weight: 500;
-            margin-bottom: var(--spacing-unit);
-            font-size: 1rem;
-        }
-        
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: calc(var(--spacing-unit) * 1.75);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            font-size: 1rem;
-            font-family: inherit;
-            transition: border-color 150ms, box-shadow 150ms;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-        }
-        
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.2);
-        }
-        
-        .form-group input.invalid,
-        .form-group select.invalid {
-            border-color: #dc3545;
-        }
-        
-        .error-message {
-            color: #dc3545;
-            font-size: 0.9rem;
-            margin-top: 6px;
-            display: none;
-        }
-        
         .footer-microline {
             text-align: center;
             padding: calc(var(--spacing-unit) * 4) 0;
@@ -688,39 +630,6 @@
             color: var(--text-secondary);
             border-top: 1px solid var(--border-color);
             margin-top: calc(var(--spacing-unit) * 8);
-        }
-        
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 14px 28px;
-            border-radius: var(--radius-md);
-            color: #ffffff;
-            font-weight: 700;
-            z-index: 1001;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 300ms;
-        }
-        
-        .toast.show {
-            opacity: 1;
-            visibility: visible;
-            transform: translate(-50%, -20px);
-        }
-        
-        .toast.success {
-            background-color: #198754;
-        }
-        
-        .toast.error {
-            background-color: #dc3545;
-        }
-        
-        .toast.info {
-            background-color: #0dcaf0;
         }
         
         @media (min-width: 768px) {
@@ -974,41 +883,18 @@
     <footer id="contact" class="section">
         <div class="container contact-wrapper">
             <h2>Ready to Start?</h2>
-            <p>Fill the form below. If you don’t have a problem statement, leave it blank—we’ll help you choose the perfect one.</p>
-            <form id="contactForm" novalidate style="margin-top: calc(var(--spacing-unit) * 5);">
-                <div class="form-group"><label for="interest">I am interested in</label><select id="interest" name="interest" required><option value="Project">A Project</option><option value="Training">A Training Program</option><option value="Both">Both Project & Training</option></select></div>
-                <div class="form-group"><label for="fullName">Full Name</label><input type="text" id="fullName" name="name" required maxlength="80">
-                    <div class="error-message" id="nameError"></div>
-                </div>
-                <div class="form-group"><label for="email">College Email</label><input type="email" id="email" name="email" required>
-                    <div class="error-message" id="emailError"></div>
-                </div>
-                <div class="form-group"><label for="phone">Phone</label><input type="tel" id="phone" name="phone" required>
-                    <div class="error-message" id="phoneError"></div>
-                </div>
-                <div class="form-group"><label for="year">Year</label><select id="year" name="year" required><option value="">Select your year</option><option value="1st Year">1st Year</option><option value="2nd Year">2nd Year</option><option value="3rd Year">3rd Year</option><option value="4th Year">4th Year</option><option value="5th Year/PG">5th Year/PG</option></select>
-                    <div class="error-message" id="yearError"></div>
-                </div>
-                <div class="form-group"><label for="problemStatement">Problem Statement (optional)</label><textarea id="problemStatement" name="problem" placeholder="Paste your idea here, or leave blank for our suggestions." maxlength="1200"></textarea></div>
-                <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
-                <div class="checkbox-group" style="display: flex; align-items: center; gap: 12px; margin: 24px 0;"><input type="checkbox" id="consent" name="consent" required style="width: 1.2em; height: 1.2em;"><label for="consent" style="margin:0; font-weight: 400; color: var(--text-secondary);">I agree to be contacted via phone/WhatsApp/email about my project.</label></div>
-                <div class="error-message" id="consentError" style="text-align: left;"></div>
-                <button type="submit" id="submitBtn" class="btn btn-primary" style="width: 100%; margin-top: var(--spacing-unit);">Get a Callback</button>
-            </form>
+            <p>Click the button below to get in touch. We’ll help you choose the perfect project or training program.</p>
+            <div style="margin-top: calc(var(--spacing-unit) * 5);">
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSchIP4ScE4AA5cCgawIbDiN23DArdo-mxWtiHUgRE0SRVd3-A/viewform?usp=header" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="width: 100%; max-width: 320px;">
+                    Get a Callback
+                </a>
+            </div>
         </div>
         <div class="footer-microline">© <span id="currentYear"></span> WeMakeProjects — Your Success, Delivered.</div>
     </footer>
 
-    <div id="toast" class="toast" role="alert" aria-live="assertive"></div>
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- CONFIGURATION ---
-            const CONFIG = {
-                //  IMPORTANT: PASTE YOUR GOOGLE APPS SCRIPT DEPLOYMENT URL HERE 
-                GOOGLE_SHEET_URL: "https://script.google.com/macros/s/AKfycby9sfJwOhIm1xQwk6xAworZxsnOBBy54_iNnkBu3e2dk1ZP6j7E7rOuM81PLL1clA8MIQ/exec",
-            };
-
             // --- DATA & INITIAL SETUP ---
             const projectsData = [{ title: "Smart City Waste Bin", outcome: "“Cut collection trips by 32%”", tags: ["IoT", "ESP32", "Cloud"], category: "iot" }, { title: "Stock Price Predictor", outcome: "“Achieved 85% directional accuracy”", tags: ["LSTM", "AI/ML"], category: "ml" }, { title: "Smart Irrigation System", outcome: "“Reduced water usage by 40%”", tags: ["Arduino", "Sensors"], category: "iot" }, { title: "Facial Recognition Lock", outcome: "“Latency under 300ms”", tags: ["Vision", "Edge AI"], category: "ml iot" }, { title: "E-commerce Platform", outcome: "“Full-featured with payment gateway”", tags: ["React", "Node.js"], category: "web" }, { title: "Sentiment Analysis Tool", outcome: "“Analyzed social media trends”", tags: ["NLP", "Python"], category: "ml" }, { title: "Home Automation System", outcome: "“Control lights & fans remotely”", tags: ["IoT", "Blynk"], category: "iot" }, { title: "Live Tutoring Platform", outcome: "“Supported 50+ concurrent users”", tags: ["WebRTC", "Socket.io"], category: "web" }, { title: "Crop Disease Detection", outcome: "“Achieved 95% accuracy”", tags: ["CNN", "TensorFlow"], category: "ml" }, { title: "Aquarium pH Control", outcome: "“Auto-maintains pH 6.8–7.2”", tags: ["NodeMCU", "Automation"], category: "iot" }, { title: "Placement Match Portal", outcome: "“Match rate +28%”", tags: ["Web", "Database"], category: "web" }, { title: "Biogas Monitor", outcome: "“Threshold alerts + cloud log”", tags: ["Sensors", "Alerts"], category: "iot" }, { title: "Movie Recommendation Engine", outcome: "“Personalized user suggestions”", tags: ["AI/ML", "Collaborative Filtering"], category: "ml" }, { title: "Portfolio Builder App", outcome: "“Create and deploy a personal site”", tags: ["Web", "JavaScript"], category: "web" }, { title: "GPS Asset Tracker", outcome: "“Real-time location monitoring”", tags: ["IoT", "GPS Module"], category: "iot" }];
             const projectsGrid = document.getElementById('projects-grid-container');
@@ -1095,165 +981,6 @@
             });
 
             renderProjects();
-
-            // --- FORM HANDLING LOGIC ---
-            const form = document.getElementById('contactForm');
-            const formFields = {
-                interest: form.querySelector('#interest'),
-                name: form.querySelector('#fullName'),
-                email: form.querySelector('#email'),
-                phone: form.querySelector('#phone'),
-                year: form.querySelector('#year'),
-                consent: form.querySelector('#consent'),
-                honeypot: form.querySelector('[name="website"]')
-            };
-
-            const validationRules = {
-                name: (v) => v.trim() !== '',
-                email: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),
-                phone: (v) => /^[6-9]\d{9}$/.test(v.trim()),
-                year: (v) => v !== '',
-                interest: (v) => v !== '',
-                consent: (c) => c
-            };
-
-            const showToast = (message, type = 'info', duration = 4000) => {
-                const toast = document.getElementById('toast');
-                toast.textContent = message;
-                toast.className = `toast show ${type}`;
-                setTimeout(() => {
-                    toast.className = 'toast';
-                }, duration);
-            };
-
-            const toggleError = (field, name, isValid) => {
-                const errorEl = document.getElementById(`${name}Error`);
-                const errorMessages = { name: "Full name is required.", email: "A valid email is required.", phone: "A valid 10-digit phone number is required.", year: "Please select your year.", consent: "You must agree to be contacted." };
-                if (isValid) {
-                    field.classList.remove('invalid');
-                    if (errorEl) errorEl.style.display = 'none';
-                } else {
-                    field.classList.add('invalid');
-                    if (errorEl && errorMessages[name]) {
-                        errorEl.textContent = errorMessages[name];
-                        errorEl.style.display = 'block';
-                    }
-                }
-            };
-
-            const validateForm = () => {
-                let isValid = true;
-                for (const key in formFields) {
-                    if (validationRules[key]) {
-                        const field = formFields[key];
-                        const value = field.type === 'checkbox' ? field.checked : field.value;
-                        const fieldIsValid = validationRules[key](value);
-                        toggleError(field, key, fieldIsValid);
-                        if (!fieldIsValid) isValid = false;
-                    }
-                }
-                return isValid;
-            };
-
-            form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    
-    const lastSubmit = parseInt(localStorage.getItem('pf_last_submit') || '0');
-    if (Date.now() - lastSubmit < 10000) {
-        showToast("Please wait before submitting again.", "error");
-        return;
-    }
-    
-    if (formFields.honeypot.value) return;
-    
-    if (!validateForm()) {
-        showToast("Please fix the errors to continue.", "error");
-        return;
-    }
-    
-    if (!CONFIG.GOOGLE_SHEET_URL.includes('google.com')) {
-        showToast("Form is not configured. Please contact support.", "error");
-        console.error("Google Sheet URL is not configured.");
-        return;
-    }
-    
-    const submitBtn = document.getElementById('submitBtn');
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting...';
-    
-    const formData = new FormData(form);
-    
-    // Make the fetch request with better error handling
-    fetch(CONFIG.GOOGLE_SHEET_URL, {
-        method: 'POST',
-        mode: 'cors',
-        body: formData,
-        headers: {
-            'Accept': 'application/json'
-        }
-    })
-    .then(response => {
-        console.log('Response status:', response.status);
-        console.log('Response headers:', [...response.headers.entries()]);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-        
-        const contentType = response.headers.get('content-type');
-        if (!contentType || !contentType.includes('application/json')) {
-            console.warn('Expected JSON response but got:', contentType);
-            // Try to read as text to see what we actually got
-            return response.text().then(text => {
-                console.log('Response text:', text);
-                try {
-                    return JSON.parse(text);
-                } catch (e) {
-                    throw new Error('Invalid JSON response from server');
-                }
-            });
-        }
-        
-        return response.json();
-    })
-    .then(data => {
-        console.log('Parsed response data:', data);
-        
-        if (data.result === 'success') {
-            showToast("Success! Your form has been submitted.", "success");
-            form.reset();
-            submitBtn.classList.add('is-success');
-            submitBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" style="width:20px; height:20px; display:inline-block; vertical-align:middle; margin-right:8px;" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg> Submitted!`;
-            setTimeout(() => {
-                submitBtn.disabled = false;
-                submitBtn.classList.remove('is-success');
-                submitBtn.innerHTML = 'Get a Callback';
-            }, 4000);
-        } else {
-            throw new Error(data.error || 'Server reported an error.');
-        }
-    })
-    .catch(error => {
-        console.error('Submission Error:', error);
-        
-        // More specific error messages based on the error type
-        let errorMessage = "Submission failed. Please try again.";
-        if (error.message.includes('CORS')) {
-            errorMessage = "Network error. Please check your connection and try again.";
-        } else if (error.message.includes('JSON')) {
-            errorMessage = "Server response error. Please try again in a moment.";
-        } else if (error.message.includes('HTTP')) {
-            errorMessage = "Server error. Please try again later.";
-        }
-        
-        showToast(errorMessage, "error");
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = 'Get a Callback';
-    })
-    .finally(() => {
-        localStorage.setItem('pf_last_submit', Date.now().toString());
-    });
-});
         });
     </script>
 </body>
